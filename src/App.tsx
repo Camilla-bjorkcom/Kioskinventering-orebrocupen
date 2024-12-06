@@ -119,7 +119,7 @@ function App() {
                                 <FormItem>
                                   <FormLabel>Antal i styck</FormLabel>
                                   <FormControl>
-                                    <Input {...field} type="number" />
+                                    <Input {...field} type="text" />
                                   </FormControl>
                                 </FormItem>
                               )}
@@ -132,7 +132,7 @@ function App() {
                                 <FormItem>
                                   <FormLabel>Antal i förpackningar</FormLabel>
                                   <FormControl>
-                                    <Input {...field} type="number" />
+                                    <Input {...field} type="text" />
                                   </FormControl>
                                 </FormItem>
                               )}
