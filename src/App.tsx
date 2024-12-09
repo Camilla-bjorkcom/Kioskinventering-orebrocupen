@@ -44,10 +44,10 @@ function App() {
   };
 
   const inventoryList: KioskInventory[] = [
-    { productName: "Korv", amountPieces: 50, amountPackages: 5 },
-    { productName: "Hamburgare", amountPieces: 100, amountPackages: 10 },
-    { productName: "Coca-cola", amountPieces: 200, amountPackages: 20 },
-    { productName: "Kexchoklad", amountPieces: 150, amountPackages: 15 },
+    { productName: "Korv", amountPieces: 0, amountPackages: 0 },
+    { productName: "Hamburgare", amountPieces: 0, amountPackages: 0 },
+    { productName: "Coca-cola", amountPieces: 0, amountPackages: 0 },
+    { productName: "Kexchoklad", amountPieces: 0, amountPackages: 0 },
   ];
 
   const form = useForm<FormData>({
