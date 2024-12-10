@@ -1,76 +1,141 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  useForm,
-  useFieldArray,
-  FormProvider,
-  UseFormReturn,
-} from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import {
   FormField,
   FormItem,
   FormLabel,
   FormControl,
+  Form,
 } from "@/components/ui/form";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import Header from "./components/Header";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+
+type KioskInventory = {
+  id: number;
+  products: Products[];
+};
+
+interface Products {
+  id: number;
+  productName: string;
+  amountPieces: number;
+  amountPackages: number;
+}
 
 function App() {
   const facility = "Rosta Gärde";
   const kiosk = "Kiosk 1";
   const inventoryDate = "2025-06-13 14:25";
 
+  const [inventoryList, setInventoryList] = useState<Products[]>([]);
+
   const formSchema = z.object({
     products: z.array(
       z.object({
         productName: z.string().min(1, "Produktnamn är obligatoriskt"),
-        amountPieces: z
+        amountPieces: z.coerce
           .number()
           .min(0, "Antal stycken måste vara större än eller lika med 0"),
-        amountPackages: z
+        amountPackages: z.coerce
           .number()
           .min(0, "Antal paket måste vara större än eller lika med 0"),
       })
     ),
   });
 
+  const id = "3395";
+
   type FormData = z.infer<typeof formSchema>;
 
-  type KioskInventory = {
-    productName: string;
-    amountPieces: number;
-    amountPackages: number;
-  };
-
-  const inventoryList: KioskInventory[] = [
-    { productName: "Korv", amountPieces: 0, amountPackages: 0 },
-    { productName: "Hamburgare", amountPieces: 0, amountPackages: 0 },
-    { productName: "Coca-cola", amountPieces: 0, amountPackages: 0 },
-    { productName: "Kexchoklad", amountPieces: 0, amountPackages: 0 },
-  ];
+  const { isLoading, error, refetch } = useQuery<KioskInventory>({
+    queryKey: ["inventoryList"],
+    queryFn: async () => {
+      const response = await fetch(`http://localhost:3000/inventoryList/${id}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch products");
+      }
+      const data = await response.json();
+      setInventoryList(data.products);
+      return data.products;
+    },
+  });
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      products: inventoryList,
+      products: [
+        {
+          productName: "Hej",
+          amountPieces: 100,
+          amountPackages: 1112,
+        },
+        {
+          productName: "då",
+          amountPieces: 12,
+          amountPackages: 15,
+        },
+      ],
     },
   });
+
 
   const { fields } = useFieldArray({
     control: form.control,
     name: "products",
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log(data);
+  const handleSubmit = form.handleSubmit(async (data: FormData) => {
+    console.log("I handlesubmit");
+    try {
+      const updatedList = await saveChangesToInventoryList(data);
+      console.log("Updated list:", updatedList);
+    } catch (error) {
+      console.error("Failed to save changes", error);
+    }
+  }, console.error);
+
+  const saveChangesToInventoryList = async (data: FormData) => {
+    const url = `http://localhost:3000/inventoryList/${id}`;
+
+    const sanitizedInventoryList = {
+      products: data.products.map((product) => ({
+        productname: product.productName,
+        amountPieces: product.amountPieces,
+        amountPackages: product.amountPackages,
+      })),
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(sanitizedInventoryList),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Server response error:", errorText);
+        throw new Error("Failed to update list");
+      }
+
+      const updatedData = await response.json();
+      return updatedData;
+    } catch (error) {
+      console.error("Update failed:", error);
+      throw error;
+    }
   };
 
-  function Form({
-    children,
-    ...formProps
-  }: UseFormReturn<any> & { children: React.ReactNode }) {
-    return <FormProvider {...formProps}>{children}</FormProvider>;
+  if (isLoading) {
+    return <div>Loading products...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {String(error)}</div>;
   }
 
   return (
@@ -90,60 +155,61 @@ function App() {
           </div>
 
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="w-fit mx-auto mb-20"
-            >
-              {fields.map((item, index) => (
-                <FormField
-                  key={item.id}
-                  control={form.control}
-                  name={`products.${index}.productName`}
-                  render={() => (
-                    <div
-                      className={`space-y-4 ${
-                        index % 2 === 0 ? "bg-gray-100 rounded-lg p-5" : "bg-white rounded-lg p-5"
-                      }`}
-                    >
+            <form onSubmit={handleSubmit} className="w-fit mx-auto mb-20">
+              {fields.map((product, index) => (
+                <div
+                  key={product.id}
+                  className={`space-y-4 ${
+                    index % 2 === 0
+                      ? "bg-gray-100 rounded-lg p-5"
+                      : "bg-white rounded-lg p-5"
+                  }`}
+                >
+                  <FormField
+                    key={product.id}
+                    control={form.control}
+                    name={`products.${index}.productName`}
+                    render={() => (
                       <FormItem>
                         <div className="flex gap-20 mx-auto">
                           <FormLabel className="self-center w-[100px]">
-                            {item.productName}
+                            {product.productName}
                           </FormLabel>
-
-                          <div className="flex gap-5">
-                            <FormField
-                              control={form.control}
-                              name={`products.${index}.amountPieces`}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Antal i styck</FormLabel>
-                                  <FormControl>
-                                    <Input {...field} type="text" />
-                                  </FormControl>
-                                </FormItem>
-                              )}
-                            />
-
-                            <FormField
-                              control={form.control}
-                              name={`products.${index}.amountPackages`}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Antal i förpackningar</FormLabel>
-                                  <FormControl>
-                                    <Input {...field} type="text" />
-                                  </FormControl>
-                                </FormItem>
-                              )}
-                            />
-                          </div>
                         </div>
                       </FormItem>
-                    </div>
-                  )}
-                />
+                    )}
+                  />
+                  <div className="flex gap-5">
+                    <FormField
+                      key={product.id}
+                      control={form.control}
+                      name={`products.${index}.amountPieces`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Antal i styck</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      key={index}
+                      control={form.control}
+                      name={`products.${index}.amountPackages`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Antal i förpackningar</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
               ))}
+
               <div className="w-1/2 place-self-center">
                 <Button type="submit" className="w-full mt-10">
                   Skicka inventering

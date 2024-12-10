@@ -1,0 +1,30 @@
+{
+  "inventoryList": [
+    {
+      "products": [
+        {
+          "productname": "Hej",
+          "amountPieces": 100,
+          "amountPackages": 1112
+        },
+        {
+          "productname": "då",
+          "amountPieces": 12,
+          "amountPackages": 15
+        }
+      ],
+      "id": "3395"
+    },
+    {
+      "id": "3554",
+      "products": [
+        {
+          "id": "1",
+          "productName": "Rullgrillskorv",
+          "amountPieces": 0,
+          "amountPackages": 0
+        }
+      ]
+    }
+  ]
+}
