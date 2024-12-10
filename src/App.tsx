@@ -11,7 +11,7 @@ import {
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import Header from "./components/Header";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 type KioskInventory = {
@@ -64,24 +64,23 @@ function App() {
     },
   });
 
-  const form = useForm<FormData>({
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      products: [
-        {
-          productName: "Hej",
-          amountPieces: 100,
-          amountPackages: 1112,
-        },
-        {
-          productName: "då",
-          amountPieces: 12,
-          amountPackages: 15,
-        },
-      ],
+      products: [],
     },
   });
 
+  useEffect(() => {
+    if (inventoryList.length > 0) {
+      form.reset({
+        products: inventoryList.map((product) => ({
+          productId: product.id,
+          productName: product.productName,
+        })),
+      });
+    }
+  }, [inventoryList, form]);
 
   const { fields } = useFieldArray({
     control: form.control,
@@ -159,7 +158,7 @@ function App() {
               {fields.map((product, index) => (
                 <div
                   key={product.id}
-                  className={`space-y-4 ${
+                  className={`space-y-4 flex ${
                     index % 2 === 0
                       ? "bg-gray-100 rounded-lg p-5"
                       : "bg-white rounded-lg p-5"
@@ -170,12 +169,10 @@ function App() {
                     control={form.control}
                     name={`products.${index}.productName`}
                     render={() => (
-                      <FormItem>
-                        <div className="flex gap-20 mx-auto">
-                          <FormLabel className="self-center w-[100px]">
-                            {product.productName}
-                          </FormLabel>
-                        </div>
+                      <FormItem className="place-content-center">
+                        <FormLabel >
+                          <p className="w-[220px]">{product.productName}</p>
+                        </FormLabel>
                       </FormItem>
                     )}
                   />
