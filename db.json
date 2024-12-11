@@ -1,0 +1,30 @@
+{
+  "inventoryList": [
+    {
+      "products": [
+        {
+          "productName": "Rullgrillskorv",
+          "amountPieces": 1,
+          "amountPackages": 1
+        },
+        {
+          "productName": "Hamburgare",
+          "amountPieces": 1,
+          "amountPackages": 1
+        }
+      ],
+      "id": "3395"
+    },
+    {
+      "id": "3554",
+      "products": [
+        {
+          "id": "1",
+          "productName": "Rullgrillskorv",
+          "amountPieces": 0,
+          "amountPackages": 0
+        }
+      ]
+    }
+  ]
+}
