@@ -13,6 +13,9 @@ import { Input } from "./components/ui/input";
 import Header from "./components/Header";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast"
+import { Toaster } from "./components/ui/toaster";
+
 
 type KioskInventory = {
   id: number;
@@ -31,6 +34,7 @@ function App() {
   const kiosk = "Kiosk 1";
   const inventoryDate = "2025-06-13 14:25";
 
+  const { toast } = useToast();
   const [inventoryList, setInventoryList] = useState<Products[]>([]);
 
   const formSchema = z.object({
@@ -51,7 +55,7 @@ function App() {
 
   type FormData = z.infer<typeof formSchema>;
 
-  const { isLoading, error, refetch } = useQuery<KioskInventory>({
+  const { isLoading, error } = useQuery<KioskInventory>({
     queryKey: ["inventoryList"],
     queryFn: async () => {
       const response = await fetch(`http://localhost:3000/inventoryList/${id}`);
@@ -100,19 +104,12 @@ function App() {
   const saveChangesToInventoryList = async (data: FormData) => {
     const url = `http://localhost:3000/inventoryList/${id}`;
 
-    const sanitizedInventoryList = {
-      products: data.products.map((product) => ({
-        productname: product.productName,
-        amountPieces: product.amountPieces,
-        amountPackages: product.amountPackages,
-      })),
-    };
 
     try {
       const response = await fetch(url, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(sanitizedInventoryList),
+        body: JSON.stringify(data),
       });
 
       if (!response.ok) {
@@ -121,8 +118,8 @@ function App() {
         throw new Error("Failed to update list");
       }
 
-      const updatedData = await response.json();
-      return updatedData;
+      form.reset();
+
     } catch (error) {
       console.error("Update failed:", error);
       throw error;
@@ -137,20 +134,19 @@ function App() {
     return <div>Error: {String(error)}</div>;
   }
 
+
   return (
     <>
       <Header />
-      <div className="container mx-auto">
-        <h1 className="text-4xl font-bold w-full mb-10 mt-5">
-          Inventering kiosker
-        </h1>
+      <Toaster />
+      <div className="container mx-auto p-3">
         <div className="rounded-xl border border-black border-solid text-black aspect-video">
-          <h2 className="text-3xl text-center w-full mt-10 font-bold">
+          <h2 className="text-lg lg:text-3xl text-center w-full mt-10 font-bold">
             Inventera {facility} {kiosk}
           </h2>
-          <div className="flex flex-col w-full place-items-center mt-5 gap-3 mb-16">
-            <p className="text-lg">Senast inventering gjord:</p>
-            <h3 className="text-lg font-semibold">{inventoryDate}</h3>
+          <div className="w-full place-items-center mt-5 gap-3 mb-16">
+            <p className="text-sm lg:text-lg">Senast inventering gjord:</p>
+            <h3 className="lg:text-lg font-semibold">{inventoryDate}</h3>
           </div>
 
           <Form {...form}>
@@ -158,7 +154,7 @@ function App() {
               {fields.map((product, index) => (
                 <div
                   key={product.id}
-                  className={`space-y-4 flex ${
+                  className={`space-y-4 lg:flex ${
                     index % 2 === 0
                       ? "bg-gray-100 rounded-lg p-5"
                       : "bg-white rounded-lg p-5"
@@ -170,8 +166,10 @@ function App() {
                     name={`products.${index}.productName`}
                     render={() => (
                       <FormItem className="place-content-center">
-                        <FormLabel >
-                          <p className="w-[220px]">{product.productName}</p>
+                        <FormLabel>
+                          <p className="lg:w-[220px] text-lg">
+                            {product.productName}
+                          </p>
                         </FormLabel>
                       </FormItem>
                     )}
@@ -208,8 +206,17 @@ function App() {
               ))}
 
               <div className="w-1/2 place-self-center">
-                <Button type="submit" className="w-full mt-10">
-                  Skicka inventering
+                <Button
+                  type="submit"
+                  className="w-full mt-10"
+                  onClick={() => {
+                    toast({
+                      title: "Lyckat!",
+                      description: "Inventering skickades iväg",
+                    });
+                  }}
+                >
+                  Skicka in inventering
                 </Button>
               </div>
             </form>
