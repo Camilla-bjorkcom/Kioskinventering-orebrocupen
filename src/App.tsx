@@ -16,7 +16,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast"
 import { Toaster } from "./components/ui/toaster";
 
-
 type KioskInventory = {
   id: number;
   products: Products[];
@@ -103,8 +102,6 @@ function App() {
 
   const saveChangesToInventoryList = async (data: FormData) => {
     const url = `http://localhost:3000/inventoryList/${id}`;
-
-
     try {
       const response = await fetch(url, {
         method: "PUT",
