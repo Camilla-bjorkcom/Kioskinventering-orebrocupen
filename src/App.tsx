@@ -54,15 +54,14 @@ function App() {
 
   type FormData = z.infer<typeof formSchema>;
 
-  const { isLoading, error } = useQuery<KioskInventory>({
+  const { data, isLoading, error } = useQuery<Products[]>({
     queryKey: ["inventoryList"],
     queryFn: async () => {
       const response = await fetch(`http://localhost:3000/inventoryList/${id}`);
       if (!response.ok) {
         throw new Error("Failed to fetch products");
       }
-      const data = await response.json();
-      setInventoryList(data.products);
+      const data: KioskInventory = await response.json();
       return data.products;
     },
   });
