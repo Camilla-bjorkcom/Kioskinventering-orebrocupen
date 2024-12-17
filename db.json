@@ -5,14 +5,14 @@
         {
           "id": "1",
           "productName": "Rullgrillskorv",
-          "amountPieces": 1,
+          "amountPieces": "111444",
           "amountPackages": 1
         },
         {
           "id": "2",
           "productName": "Hamburgare",
-          "amountPieces": 1,
-          "amountPackages": 1
+          "amountPieces": "1112",
+          "amountPackages": "122"
         },
         {
           "id": "3",
@@ -35,8 +35,8 @@
         {
           "id": "6",
           "productName": "Haribo Nappar Sura 80g",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "55",
+          "amountPackages": "055"
         },
         {
           "id": "7",

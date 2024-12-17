@@ -4,17 +4,7 @@ import { Input } from "./components/ui/input";
 import { Button } from "./components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "./hooks/use-toast";
-import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  Form,
-} from "@/components/ui/form";
 import { Toaster } from "./components/ui/toaster";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 
 type KioskInventory = {
   id: number;
@@ -128,6 +118,12 @@ const App2 = () => {
     }
   };
 
+  const goToNextProduct = () => {
+    setCurrentProductIndex((prevIndex) =>
+      prevIndex + 1 >= products.length ? 0 : prevIndex + 1
+    );
+  };
+
   if (isLoading) {
     return <div>Loading products...</div>;
   }
@@ -150,21 +146,25 @@ const App2 = () => {
       <form onSubmit={handleSubmit} className="w-fit mx-auto mb-20">
           <h3 className="text-2xl font-bold mb-4">{currentProduct.productName}</h3>
           <div className="flex gap-5 mb-5">
+            <div className="flex flex-col">
+                <p>Antal i styck</p>
             <Input
               value={currentProduct.amountPieces}
-              onFocus={() => setKeypadTarget("pieces")}
               readOnly
             />
+             </div>
+             <div className="flex flex-col">
+             <p>Antal i obrutna förpackningar</p>
             <Input
-              value={currentProduct.amountPackages}
-              onFocus={() => setKeypadTarget("packages")}
+              value={currentProduct.amountPackages}      
               readOnly
             />
+            </div>
           </div>
 
           <Keypad onKeyPressed={handleKeypadPress} />
 
-          <Button onClick={goToNextFieldOrProduct} className="mt-4">
+          <Button type="button" onClick={goToNextProduct} className="mt-4">
             Nästa
           </Button>
           
