@@ -26,6 +26,10 @@ const App2 = () => {
   );
   const [products, setProducts] = useState<Products[]>([]);
 
+  const facility = "Rosta Gärde";
+  const kiosk = "Kiosk 1";
+  const inventoryDate = "2025-06-13 14:25";
+
   const id = "3395";
 
   const { data, isLoading, error } = useQuery<Products[]>({
@@ -81,11 +85,15 @@ const App2 = () => {
 
     updateCurrentProduct(keypadTarget, (prevValue) => prevValue + keyPadKey);
   };
-
   const updateCurrentProduct = (
     field: "pieces" | "packages",
     newValue: string | ((prev: string) => string)
   ) => {
+    const parseValue = (value: string) => {
+      const parsedValue = parseInt(value, 10);
+      return isNaN(parsedValue) || parsedValue <= 0 ? 1 : parsedValue; // Ensures value is at least 1
+    };
+  
     setProducts((prevProducts) =>
       prevProducts.map((product, index) =>
         index === currentProductIndex
@@ -93,14 +101,12 @@ const App2 = () => {
               ...product,
               [field === "pieces" ? "amountPieces" : "amountPackages"]:
                 typeof newValue === "function"
-                  ? newValue(
-                      String(
-                        product[
-                          field === "pieces" ? "amountPieces" : "amountPackages"
-                        ]
-                      )
-                    )
-                  : newValue,
+                  ? parseValue(newValue(
+                      String(product[
+                        field === "pieces" ? "amountPieces" : "amountPackages"
+                      ])
+                    ))
+                  : parseValue(newValue),
             }
           : product
       )
@@ -147,14 +153,23 @@ const App2 = () => {
   return (
     <>
       <Toaster />
-      <div className="grid grid-flow-row h-screen container mx-auto p-5">
+      <div className="grid grid-flow-row h-screen container mx-auto p-2">
+        <h2 className="text-lg text-center w-full font-semibold mb-5">
+          Inventera {facility} {kiosk}
+        </h2>
 
-      
         <div className="flex flex-col items-center justify-center">
           <form onSubmit={handleSubmit} className="w-fit mx-auto mb-5">
-            <h3 className="text-2xl font-bold text-center mb-4">
-              {currentProduct.productName}
-            </h3>
+            {/* Progress display */}
+            <div className="mb-4 relative">
+              <h3 className="text-2xl font-bold text-center mb-2">
+                {currentProduct.productName}
+              </h3>
+              <span className="text-right text-xs absolute -top-6 right-0 bg-neutral-50 rounded-full p-1 ">
+                {currentProductIndex + 1}/{products.length}
+              </span>
+            </div>
+
             <div className="flex gap-5 mb-5">
               <div className="flex flex-col">
                 <p className="text-xs">Antal i styck</p>
@@ -162,8 +177,9 @@ const App2 = () => {
                   value={currentProduct.amountPieces}
                   onFocus={() => setKeypadTarget("pieces")}
                   onChange={(e) =>
-                    updateCurrentProduct("pieces", () => e.target.value)
+                    updateCurrentProduct("pieces", () => e.target.value) 
                   }
+                  readOnly
                   className="focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500"
                 />
               </div>
@@ -175,6 +191,7 @@ const App2 = () => {
                   onChange={(e) =>
                     updateCurrentProduct("packages", () => e.target.value)
                   }
+                  readOnly
                   className="focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500"
                 />
               </div>
@@ -183,7 +200,8 @@ const App2 = () => {
               <Button
                 type="button"
                 onClick={goToPreviousProduct}
-                className="place-self-center"
+                className="place-self-center rounded-full h-12"
+                variant={"outline"}
               >
                 <ArrowBigLeft />
               </Button>
@@ -193,9 +211,10 @@ const App2 = () => {
               <Button
                 type="button"
                 onClick={goToNextProduct}
-                className="place-self-center"
+              className="place-self-center rounded-full h-12"
+                variant={"outline"}
               >
-                <ArrowBigRight />
+                <ArrowBigRight className="" />
               </Button>
             </div>
 

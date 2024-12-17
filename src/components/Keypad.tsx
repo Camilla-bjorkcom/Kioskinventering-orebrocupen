@@ -1,6 +1,6 @@
 import React from 'react';
 import { KeypadKey } from './KeypadKey';
-import './styles.less';
+
 
 export interface IKeypadProps {
   onKeyPressed: (keyPressed: KeypadKeys) => void;
@@ -33,9 +33,9 @@ const Keypad: React.FC<IKeypadProps> = ({ onKeyPressed }) => {
   ];
 
   return (
-    <div className="keypad">
+    <div className="flex flex-col h-full w-full mt-5">
       {rows.map((row, rowIndex) => (
-        <div className="keypad-row" key={`row-${rowIndex}`}>
+        <div className="items-center flex h-full w-full justify-center" key={`row-${rowIndex}`}>
           {row.map((keyPadKey) => (
             <KeypadKey
               keypadKey={keyPadKey}
