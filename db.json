@@ -5,146 +5,146 @@
         {
           "id": "1",
           "productName": "Rullgrillskorv",
-          "amountPieces": "111444",
-          "amountPackages": 1
+          "amountPieces": "12",
+          "amountPackages": "12"
         },
         {
           "id": "2",
           "productName": "Hamburgare",
-          "amountPieces": 111265,
-          "amountPackages": "122"
+          "amountPieces": "1",
+          "amountPackages": "1"
         },
         {
           "id": "3",
           "productName": "Coca-cola",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "1",
+          "amountPackages": "1"
         },
         {
           "id": "4",
           "productName": "Kexchoklad",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "1",
+          "amountPackages": "1"
         },
         {
           "id": "5",
           "productName": "Haribo Lakrits Nappar",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "1",
+          "amountPackages": "2"
         },
         {
           "id": "6",
           "productName": "Haribo Nappar Sura 80g",
-          "amountPieces": "55",
-          "amountPackages": "055"
+          "amountPieces": "1",
+          "amountPackages": "1"
         },
         {
           "id": "7",
           "productName": "Pringels Original",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "1",
+          "amountPackages": "1"
         },
         {
           "id": "8",
           "productName": "Marabou Mjölkchoklad",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "11",
+          "amountPackages": "1"
         },
         {
           "id": "9",
           "productName": "Haribo Nappar Frukt 80g",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "1",
+          "amountPackages": "1"
         },
         {
           "id": "10",
           "productName": "Haribo Nappar Cola 80g",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "1",
+          "amountPackages": "1"
         },
         {
           "id": "11",
           "productName": "Gurka",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "1",
+          "amountPackages": "1"
         },
         {
           "id": "12",
           "productName": "Delicatoboll",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "1",
+          "amountPackages": "1"
         },
         {
           "id": "13",
           "productName": "Johnnys Hamburgerdressing",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "1",
+          "amountPackages": "1"
         },
         {
           "id": "14",
           "productName": "Johnnys Ketchup Original",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "1",
+          "amountPackages": "1"
         },
         {
           "id": "15",
           "productName": "Johnnys Senap Sötstark",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "1",
+          "amountPackages": "1"
         },
         {
           "id": "16",
           "productName": "Sibyllia Hamburgerficka",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "1",
+          "amountPackages": "1"
         },
         {
           "id": "17",
           "productName": "Pizza Vegetarisk",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "11",
+          "amountPackages": "1"
         },
         {
           "id": "18",
           "productName": "Pizza Kebab",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "1",
+          "amountPackages": "1"
         },
         {
           "id": "19",
           "productName": "Midnight Grown",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "11",
+          "amountPackages": "1"
         },
         {
           "id": "20",
           "productName": "Mer Päron",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "1",
+          "amountPackages": "1"
         },
         {
           "id": "21",
           "productName": "Mer Apelsin",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "1",
+          "amountPackages": "1"
         },
         {
           "id": "22",
           "productName": "Bonaqua Citron/lime",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "1",
+          "amountPackages": "1"
         },
         {
           "id": "23",
           "productName": "Powerade Mountain Blast",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "1",
+          "amountPackages": "1"
         },
         {
           "id": "24",
           "productName": "Coca-Cola Zero",
-          "amountPieces": 0,
-          "amountPackages": 0
+          "amountPieces": "1",
+          "amountPackages": "1"
         }
       ],
       "id": "3395"

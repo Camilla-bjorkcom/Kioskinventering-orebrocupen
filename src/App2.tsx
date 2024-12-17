@@ -25,7 +25,7 @@ const App2 = () => {
     "pieces"
   );
   const [products, setProducts] = useState<Products[]>([]);
-
+  const [editedProducts, setEditedProducts] = useState<Products[]>([]); 
   const facility = "Rosta Gärde";
   const kiosk = "Kiosk 1";
   const inventoryDate = "2025-06-13 14:25";
@@ -43,9 +43,15 @@ const App2 = () => {
       return data.products;
     },
   });
-
   useEffect(() => {
-    if (data) setProducts(data);
+    if (data) {
+      setProducts(data); // Visa produktnamnen
+      setEditedProducts(data.map((product) => ({
+        ...product,
+        amountPieces: 0, // Sätt tomt initialt
+        amountPackages: 0, // Sätt tomt initialt
+      })));
+    }
   }, [data]);
 
   const handleSubmit = async () => {
@@ -54,7 +60,7 @@ const App2 = () => {
       const response = await fetch(url, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ products }), // Skickar den modifierade listan
+        body: JSON.stringify({ products: editedProducts })
       });
 
       if (!response.ok) {
@@ -62,6 +68,11 @@ const App2 = () => {
         console.error("Server response error:", errorText);
         throw new Error("Failed to update list");
       }
+      toast({
+        title: "Lyckat!",
+        description: "Inventeringen skickades iväg",
+      });
+
     } catch (error) {
       console.error("Update failed:", error);
       alert("Misslyckades med att spara ändringar.");
@@ -69,9 +80,9 @@ const App2 = () => {
   };
 
   const handleKeypadPress = (keyPadKey: KeypadKeys) => {
-    if (!products.length) return;
+    if (!editedProducts.length) return;
 
-    const currentProduct = products[currentProductIndex];
+    const currentProduct = editedProducts[currentProductIndex];
 
     if (keyPadKey === KeypadKeys.CLEAR) {
       updateCurrentProduct(keypadTarget, "");
@@ -91,10 +102,10 @@ const App2 = () => {
   ) => {
     const parseValue = (value: string) => {
       const parsedValue = parseInt(value, 10);
-      return isNaN(parsedValue) || parsedValue <= 0 ? 1 : parsedValue; // Ensures value is at least 1
+      return isNaN(parsedValue) || parsedValue <= 0 ? "" : String(parsedValue); 
     };
   
-    setProducts((prevProducts) =>
+    setEditedProducts((prevProducts) =>
       prevProducts.map((product, index) =>
         index === currentProductIndex
           ? {
@@ -111,17 +122,6 @@ const App2 = () => {
           : product
       )
     );
-  };
-
-  const goToNextFieldOrProduct = () => {
-    if (keypadTarget === "pieces") {
-      setKeypadTarget("packages");
-    } else {
-      setKeypadTarget("pieces");
-      setCurrentProductIndex((prevIndex) =>
-        prevIndex + 1 >= products.length ? 0 : prevIndex + 1
-      );
-    }
   };
 
   const goToNextProduct = () => {
@@ -145,6 +145,7 @@ const App2 = () => {
   }
 
   const currentProduct = products[currentProductIndex];
+  const currentEditedProduct = editedProducts[currentProductIndex];
 
   if (!currentProduct) {
     return <div>No products available.</div>;
@@ -174,7 +175,7 @@ const App2 = () => {
               <div className="flex flex-col">
                 <p className="text-xs">Antal i styck</p>
                 <Input
-                  value={currentProduct.amountPieces}
+                 value={currentEditedProduct.amountPieces} 
                   onFocus={() => setKeypadTarget("pieces")}
                   onChange={(e) =>
                     updateCurrentProduct("pieces", () => e.target.value) 
@@ -186,7 +187,7 @@ const App2 = () => {
               <div className="flex flex-col">
                 <p className="text-xs">Antal i obrutna förpackningar</p>
                 <Input
-                  value={currentProduct.amountPackages}
+                 value={currentEditedProduct.amountPackages}
                   onFocus={() => setKeypadTarget("packages")}
                   onChange={(e) =>
                     updateCurrentProduct("packages", () => e.target.value)
@@ -221,12 +222,12 @@ const App2 = () => {
             <Button
               type="submit"
               className="w-full mt-10"
-              onClick={() => {
-                toast({
-                  title: "Lyckat!",
-                  description: "Inventering skickades iväg",
-                });
-              }}
+            //   onClick={() => {
+            //     toast({
+            //       title: "Lyckat!",
+            //       description: "Inventering skickades iväg",
+            //     });
+            //   }}
             >
               Skicka in inventering
             </Button>
