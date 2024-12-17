@@ -5,6 +5,7 @@ import { Button } from "./components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "./hooks/use-toast";
 import { Toaster } from "./components/ui/toaster";
+import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
 
 type KioskInventory = {
   id: number;
@@ -38,7 +39,7 @@ const App2 = () => {
       return data.products;
     },
   });
-  
+
   useEffect(() => {
     if (data) setProducts(data);
   }, [data]);
@@ -57,7 +58,6 @@ const App2 = () => {
         console.error("Server response error:", errorText);
         throw new Error("Failed to update list");
       }
-
     } catch (error) {
       console.error("Update failed:", error);
       alert("Misslyckades med att spara ändringar.");
@@ -124,6 +124,12 @@ const App2 = () => {
     );
   };
 
+  const goToPreviousProduct = () => {
+    setCurrentProductIndex((prevIndex) =>
+      prevIndex - 1 < 0 ? products.length - 1 : prevIndex - 1
+    );
+  };
+
   if (isLoading) {
     return <div>Loading products...</div>;
   }
@@ -137,52 +143,72 @@ const App2 = () => {
   if (!currentProduct) {
     return <div>No products available.</div>;
   }
- 
 
   return (
     <div className="container mx-auto p-5">
       <Toaster />
       <div className="flex flex-col items-center">
-      <form onSubmit={handleSubmit} className="w-fit mx-auto mb-20">
-          <h3 className="text-2xl font-bold mb-4">{currentProduct.productName}</h3>
+        <form onSubmit={handleSubmit} className="w-fit mx-auto mb-20">
+          <h3 className="text-2xl font-bold mb-4">
+            {currentProduct.productName}
+          </h3>
           <div className="flex gap-5 mb-5">
             <div className="flex flex-col">
-                <p>Antal i styck</p>
-            <Input
-              value={currentProduct.amountPieces}
-              readOnly
-            />
-             </div>
-             <div className="flex flex-col">
-             <p>Antal i obrutna förpackningar</p>
-            <Input
-              value={currentProduct.amountPackages}      
-              readOnly
-            />
+              <p>Antal i styck</p>
+              <Input
+                value={currentProduct.amountPieces}
+                onFocus={() => setKeypadTarget("pieces")}
+                onChange={(e) =>
+                  updateCurrentProduct("pieces", () => e.target.value)
+                }
+                className="focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500"
+              />
+            </div>
+            <div className="flex flex-col">
+              <p>Antal i obrutna förpackningar</p>
+              <Input
+                value={currentProduct.amountPackages}
+                onFocus={() => setKeypadTarget("packages")}
+                onChange={(e) =>
+                  updateCurrentProduct("packages", () => e.target.value)
+                }
+                className="focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500"
+              />
             </div>
           </div>
-
-          <Keypad onKeyPressed={handleKeypadPress} />
-
-          <Button type="button" onClick={goToNextProduct} className="mt-4">
-            Nästa
-          </Button>
-          
-        
+          <div className="flex">
             <Button
-              type="submit"
-              className="w-full mt-10"
-              onClick={() => {
-                toast({
-                  title: "Lyckat!",
-                  description: "Inventering skickades iväg",
-                });
-              }}
+              type="button"
+              onClick={goToPreviousProduct}
+              className="place-self-center"
             >
-              Skicka in inventering
+              <ArrowBigLeft />
             </Button>
-          </form>
-        
+
+            <Keypad onKeyPressed={handleKeypadPress} />
+
+            <Button
+              type="button"
+              onClick={goToNextProduct}
+              className="place-self-center"
+            >
+              <ArrowBigRight />
+            </Button>
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full mt-10"
+            onClick={() => {
+              toast({
+                title: "Lyckat!",
+                description: "Inventering skickades iväg",
+              });
+            }}
+          >
+            Skicka in inventering
+          </Button>
+        </form>
       </div>
     </div>
   );
