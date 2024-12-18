@@ -15,8 +15,8 @@ type KioskInventory = {
 interface Products {
   id: number;
   productName: string;
-  amountPieces: number;
-  amountPackages: number;
+  amountPieces: string | number;
+  amountPackages: string | number;
 }
 
 const App2 = () => {
@@ -25,7 +25,12 @@ const App2 = () => {
     "pieces"
   );
   const [products, setProducts] = useState<Products[]>([]);
-  const [editedProducts, setEditedProducts] = useState<Products[]>([]); 
+  const [editedProducts, setEditedProducts] = useState<Products[]>([]);
+  const [activeInput, setActiveInput] = useState<"pieces" | "packages" | null>(
+    null
+  );
+
+
   const facility = "Rosta Gärde";
   const kiosk = "Kiosk 1";
   const inventoryDate = "2025-06-13 14:25";
@@ -43,14 +48,17 @@ const App2 = () => {
       return data.products;
     },
   });
+
   useEffect(() => {
     if (data) {
-      setProducts(data); // Visa produktnamnen
-      setEditedProducts(data.map((product) => ({
-        ...product,
-        amountPieces: 0, // Sätt tomt initialt
-        amountPackages: 0, // Sätt tomt initialt
-      })));
+      setProducts(data);
+      setEditedProducts(
+        data.map((product) => ({
+          ...product,
+          amountPieces: "", // Initialt tomt
+          amountPackages: "", // Initialt tomt
+        }))
+      );
     }
   }, [data]);
 
@@ -60,7 +68,7 @@ const App2 = () => {
       const response = await fetch(url, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ products: editedProducts })
+        body: JSON.stringify({ products: editedProducts }),
       });
 
       if (!response.ok) {
@@ -72,7 +80,6 @@ const App2 = () => {
         title: "Lyckat!",
         description: "Inventeringen skickades iväg",
       });
-
     } catch (error) {
       console.error("Update failed:", error);
       alert("Misslyckades med att spara ändringar.");
@@ -96,15 +103,16 @@ const App2 = () => {
 
     updateCurrentProduct(keypadTarget, (prevValue) => prevValue + keyPadKey);
   };
+
   const updateCurrentProduct = (
     field: "pieces" | "packages",
     newValue: string | ((prev: string) => string)
   ) => {
     const parseValue = (value: string) => {
       const parsedValue = parseInt(value, 10);
-      return isNaN(parsedValue) || parsedValue <= 0 ? "" : String(parsedValue); 
+      return isNaN(parsedValue) ? "" : parsedValue;
     };
-  
+
     setEditedProducts((prevProducts) =>
       prevProducts.map((product, index) =>
         index === currentProductIndex
@@ -112,11 +120,17 @@ const App2 = () => {
               ...product,
               [field === "pieces" ? "amountPieces" : "amountPackages"]:
                 typeof newValue === "function"
-                  ? parseValue(newValue(
-                      String(product[
-                        field === "pieces" ? "amountPieces" : "amountPackages"
-                      ])
-                    ))
+                  ? parseValue(
+                      newValue(
+                        String(
+                          product[
+                            field === "pieces"
+                              ? "amountPieces"
+                              : "amountPackages"
+                          ]
+                        )
+                      )
+                    )
                   : parseValue(newValue),
             }
           : product
@@ -151,88 +165,110 @@ const App2 = () => {
     return <div>No products available.</div>;
   }
 
+  const handleFocus = (field: "pieces" | "packages") => {
+    setActiveInput(field);
+  };
+
   return (
     <>
       <Toaster />
-      <div className="grid grid-flow-row h-screen container mx-auto p-2">
-        <h2 className="text-lg text-center w-full font-semibold mb-5">
-          Inventera {facility} {kiosk}
-        </h2>
+      <div className="grid grid-rows-[auto__1fr_auto_2fr] h-screen container mx-auto p-4">
+        <div>
+          <h2 className="text-center w-full mb-1 h-fit">
+            {facility} {kiosk}
+          </h2>
+          <p className="text-center text-xs">
+            Senast inventering: {inventoryDate}
+          </p>
+        </div>
 
         <div className="flex flex-col items-center justify-center">
           <form onSubmit={handleSubmit} className="w-fit mx-auto mb-5">
             {/* Progress display */}
-            <div className="mb-4 relative">
-              <h3 className="text-2xl font-bold text-center mb-2">
+            <div className="mt-auto relative">
+              <h3 className="text-2xl font-bold text-center mb-6">
                 {currentProduct.productName}
               </h3>
-              <span className="text-right text-xs absolute -top-6 right-0 bg-neutral-50 rounded-full p-1 ">
+              <span className="text-right text-xs absolute -top-7 right-0 bg-neutral-200 rounded-full p-2 ">
                 {currentProductIndex + 1}/{products.length}
               </span>
             </div>
 
-            <div className="flex gap-5 mb-5">
+            <div className="flex gap-5">
               <div className="flex flex-col">
-                <p className="text-xs">Antal i styck</p>
+                <p className="text-xs font-semibold">Antal i styck</p>
                 <Input
-                 value={currentEditedProduct.amountPieces} 
-                  onFocus={() => setKeypadTarget("pieces")}
+                  value={currentEditedProduct.amountPieces}
+                  onFocus={() => {
+                    handleFocus("pieces"); 
+                    setKeypadTarget("pieces"); 
+                  }}
+                  onClick={() => {
+                    handleFocus("pieces");
+                    setKeypadTarget("pieces");
+                  }}
                   onChange={(e) =>
-                    updateCurrentProduct("pieces", () => e.target.value) 
+                    updateCurrentProduct("pieces", () => e.target.value)
                   }
                   readOnly
-                  className="focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500"
+                  autoFocus
+                  className={`border-b-2 border-black border-x-0 border-t-0 shadow-none rounded-none focus:outline-none focus-visible:ring-0 focus:border-blue-200 active:border-blue-200 w-full p-2 border-2  ${
+                    activeInput === "pieces" ? "border-blue-500 bg-blue-100" : "border-gray-300"
+                  }`}
                 />
               </div>
               <div className="flex flex-col">
-                <p className="text-xs">Antal i obrutna förpackningar</p>
+                <p className="text-xs font-semibold">
+                  Antal i obrutna förpackningar
+                </p>
                 <Input
-                 value={currentEditedProduct.amountPackages}
-                  onFocus={() => setKeypadTarget("packages")}
+                  value={currentEditedProduct.amountPackages}
+                  onFocus={() => {
+                    handleFocus("packages"); 
+                    setKeypadTarget("packages"); 
+                  }}
+                  onClick={() => {
+                    handleFocus("packages");
+                    setKeypadTarget("packages");
+                  }}
                   onChange={(e) =>
                     updateCurrentProduct("packages", () => e.target.value)
                   }
                   readOnly
-                  className="focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500"
+                  className={`border-b-2 border-black border-x-0 border-t-0 shadow-none rounded-none focus:outline-none focus-visible:ring-0 focus:border-blue-200 active:border-blue-200 w-full p-2 border-2  ${
+                    activeInput === "packages" ? "border-blue-500 bg-blue-100" : "border-gray-300"
+                  }`}
                 />
               </div>
             </div>
-            <div className="flex">
-              <Button
-                type="button"
-                onClick={goToPreviousProduct}
-                className="place-self-center rounded-full h-12"
-                variant={"outline"}
-              >
-                <ArrowBigLeft />
-              </Button>
 
-              <Keypad onKeyPressed={handleKeypadPress} />
-
-              <Button
-                type="button"
-                onClick={goToNextProduct}
-              className="place-self-center rounded-full h-12"
-                variant={"outline"}
-              >
-                <ArrowBigRight className="" />
+            <div className="w-full flex">
+              <Button type="submit" className="mt-10 mx-auto">
+                Skicka in inventering
               </Button>
             </div>
-
-            <Button
-              type="submit"
-              className="w-full mt-10"
-            //   onClick={() => {
-            //     toast({
-            //       title: "Lyckat!",
-            //       description: "Inventering skickades iväg",
-            //     });
-            //   }}
-            >
-              Skicka in inventering
-            </Button>
           </form>
         </div>
+        <div className="flex justify-between mx-5">
+          <Button
+            type="button"
+            onClick={goToPreviousProduct}
+            className="place-self-center rounded-xl h-12"
+            variant={"outline"}
+          >
+            <ArrowBigLeft />
+          </Button>
+
+          <Button
+            type="button"
+            onClick={goToNextProduct}
+            className="place-self-center rounded-xl h-12"
+            variant={"outline"}
+          >
+            <ArrowBigRight className="" />
+          </Button>
+        </div>
+        <Keypad onKeyPressed={handleKeypadPress} />
       </div>
     </>
   );

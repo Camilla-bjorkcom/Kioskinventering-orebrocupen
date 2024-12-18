@@ -33,7 +33,7 @@ const Keypad: React.FC<IKeypadProps> = ({ onKeyPressed }) => {
   ];
 
   return (
-    <div className="flex flex-col h-full w-full mt-5">
+    <div className="flex flex-col h-full w-full">
       {rows.map((row, rowIndex) => (
         <div className="items-center flex h-full w-full justify-center" key={`row-${rowIndex}`}>
           {row.map((keyPadKey) => (

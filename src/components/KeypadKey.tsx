@@ -11,7 +11,7 @@ export interface IKeypadKeyProps
 
 export const KeypadKey = (props:IKeypadKeyProps): JSX.Element => (
     <div
-        className="w-20 h-20 items-center shadow border rounded-xl cursor-pointer flex justify-center m-1 p-2 "
+        className="w-16 h-16 items-center shadow border rounded-full cursor-pointer flex justify-center m-1 p-1 "
         data-role="button"
         onClick={() => props.onKeyPressed(props.keypadKey)}  
         tabIndex={0}
