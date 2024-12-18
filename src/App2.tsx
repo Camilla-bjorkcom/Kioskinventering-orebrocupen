@@ -212,8 +212,8 @@ const App2 = () => {
                   }
                   readOnly
                   autoFocus
-                  className={`border-b-2 border-black border-x-0 border-t-0 shadow-none rounded-none focus:outline-none focus-visible:ring-0 focus:border-blue-200 active:border-blue-200 w-full p-2 border-2  ${
-                    activeInput === "pieces" ? "border-blue-500 bg-blue-100" : "border-gray-300"
+                  className={`border-b-2 border-black border-x-0 border-t-0 shadow-none rounded-none focus:outline-none focus-visible:ring-0 focus:border-orange-200 active:border-orange-200 w-full p-2  ${
+                    activeInput === "pieces" ? "border-orange-400 " : "border-gray-300"
                   }`}
                 />
               </div>
@@ -235,8 +235,8 @@ const App2 = () => {
                     updateCurrentProduct("packages", () => e.target.value)
                   }
                   readOnly
-                  className={`border-b-2 border-black border-x-0 border-t-0 shadow-none rounded-none focus:outline-none focus-visible:ring-0 focus:border-blue-200 active:border-blue-200 w-full p-2 border-2  ${
-                    activeInput === "packages" ? "border-blue-500 bg-blue-100" : "border-gray-300"
+                  className={`border-b-2 border-black border-x-0 border-t-0 shadow-none rounded-none focus:outline-none focus-visible:ring-0 focus:border-orange-200 active:border-orange-200 w-full p-2   ${
+                    activeInput === "packages" ? "border-orange-400 " : "border-gray-300"
                   }`}
                 />
               </div>
