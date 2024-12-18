@@ -139,16 +139,24 @@ const App2 = () => {
   };
 
   const goToNextProduct = () => {
-    setCurrentProductIndex((prevIndex) =>
-      prevIndex + 1 >= products.length ? 0 : prevIndex + 1
-    );
+    setCurrentProductIndex((prevIndex) => {
+      const nextIndex = prevIndex + 1 >= products.length ? 0 : prevIndex + 1;
+      setActiveInput("pieces"); // Sätt fältet till "pieces" när produkten byts
+      setKeypadTarget("pieces"); // Sätt rätt target för keypad
+      return nextIndex;
+    });
   };
-
+  
   const goToPreviousProduct = () => {
-    setCurrentProductIndex((prevIndex) =>
-      prevIndex - 1 < 0 ? products.length - 1 : prevIndex - 1
-    );
+    setCurrentProductIndex((prevIndex) => {
+      const prevIndexResult = prevIndex - 1 < 0 ? products.length - 1 : prevIndex - 1;
+      setActiveInput("pieces"); // Sätt fältet till "pieces" när produkten byts
+      setKeypadTarget("pieces"); // Sätt rätt target för keypad
+      return prevIndexResult;
+    });
   };
+  
+  
 
   if (isLoading) {
     return <div>Loading products...</div>;
