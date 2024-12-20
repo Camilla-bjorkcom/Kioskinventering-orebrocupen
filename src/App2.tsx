@@ -239,61 +239,67 @@ const App2 = () => {
               </span>
             </div>
 
-            <div className="flex gap-5">
+            
               <div className="flex flex-col">
-                <p className="text-xs font-semibold">Antal i styck</p>
                 {activeInput === "pieces" && (
-                  <Input
-                    value={currentEditedProduct.amountPieces}
-                    onFocus={() => {
-                      handleFocus("pieces");
-                      setKeypadTarget("pieces");
-                    }}
-                    onClick={() => {
-                      handleFocus("pieces");
-                      setKeypadTarget("pieces");
-                    }}
-                    onChange={(e) =>
-                      updateCurrentProduct("pieces", () => e.target.value)
-                    }
-                    readOnly
-                    autoFocus
-                    className={`border-b-2 border-black border-x-0 border-t-0 shadow-none rounded-none focus:outline-none focus-visible:ring-0 focus:border-orange-200 active:border-orange-200 w-full p-2  ${
-                      activeInput === "pieces"
-                        ? "border-orange-400 "
-                        : "border-gray-300"
-                    }`}
-                  />
+                  <>
+                    <p className="text-xs font-semibold">Antal i styck</p>
+
+                    <Input
+                      value={currentEditedProduct.amountPieces}
+                      onFocus={() => {
+                        handleFocus("pieces");
+                        setKeypadTarget("pieces");
+                      }}
+                      onClick={() => {
+                        handleFocus("pieces");
+                        setKeypadTarget("pieces");
+                      }}
+                      onChange={(e) =>
+                        updateCurrentProduct("pieces", () => e.target.value)
+                      }
+                      readOnly
+                      autoFocus
+                      className={`border-b-2 border-black border-x-0 border-t-0 shadow-none rounded-none focus:outline-none focus-visible:ring-0 focus:border-orange-200 active:border-orange-200 w-full p-2  ${
+                        activeInput === "pieces"
+                          ? "border-orange-400 "
+                          : "border-gray-300"
+                      }`}
+                    />
+                  </>
                 )}
               </div>
               <div className="flex flex-col">
-                <p className="text-xs font-semibold">
-                  Antal i obrutna förpackningar
-                </p>
                 {activeInput === "packages" && (
-                  <Input
-                    value={currentEditedProduct.amountPackages}
-                    onFocus={() => {
-                      handleFocus("packages");
-                      setKeypadTarget("packages");
-                    }}
-                    onClick={() => {
-                      handleFocus("packages");
-                      setKeypadTarget("packages");
-                    }}
-                    onChange={(e) =>
-                      updateCurrentProduct("packages", () => e.target.value)
-                    }
-                    readOnly
-                    className={`border-b-2 border-black border-x-0 border-t-0 shadow-none rounded-none focus:outline-none focus-visible:ring-0 focus:border-orange-200 active:border-orange-200 w-full p-2   ${
-                      activeInput === "packages"
-                        ? "border-orange-400 "
-                        : "border-gray-300"
-                    }`}
-                  />
+                  <>
+                    <p className="text-xs font-semibold">
+                      Antal i obrutna förpackningar
+                    </p>
+
+                    <Input
+                      value={currentEditedProduct.amountPackages}
+                      onFocus={() => {
+                        handleFocus("packages");
+                        setKeypadTarget("packages");
+                      }}
+                      onClick={() => {
+                        handleFocus("packages");
+                        setKeypadTarget("packages");
+                      }}
+                      onChange={(e) =>
+                        updateCurrentProduct("packages", () => e.target.value)
+                      }
+                      readOnly
+                      className={`border-b-2 border-black border-x-0 border-t-0 shadow-none rounded-none focus:outline-none focus-visible:ring-0 focus:border-orange-200 active:border-orange-200 w-full p-2   ${
+                        activeInput === "packages"
+                          ? "border-orange-400 "
+                          : "border-gray-300"
+                      }`}
+                    />
+                  </>
                 )}
               </div>
-            </div>
+           
 
             <div className="w-full flex">
               <Button type="submit" className="mt-10 mx-auto">
