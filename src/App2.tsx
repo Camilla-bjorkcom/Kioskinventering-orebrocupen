@@ -24,7 +24,6 @@ const App2 = () => {
   const [keypadTarget, setKeypadTarget] = useState<"pieces" | "packages">(
     "pieces"
   );
-  const [products, setProducts] = useState<Products[]>([]);
   const [editedProducts, setEditedProducts] = useState<Products[]>([]);
   const [activeInput, setActiveInput] = useState<"pieces" | "packages" | null>(
     null
@@ -97,10 +96,16 @@ const App2 = () => {
         className: "bg-green-200",
       });
 
-      // Lägg till en delay om det behövs:
-      setTimeout(() => {
-        console.log("Redirecting or doing something else...");
-      }, 3000); // 3 sekunder delay
+      //återställer alla fält
+      setEditedProducts((prevProducts) =>
+        prevProducts.map((product) => ({
+          ...product,
+          amountPieces: "",
+          amountPackages: "",
+        }))
+      );
+
+ 
     } catch (error) {
       console.error("Update failed:", error);
       toast({
@@ -222,7 +227,11 @@ const App2 = () => {
               <h3 className="text-2xl font-bold text-center mb-6">
                 {currentProduct.productName}
               </h3>
-              <span className="text-right text-xs absolute -top-7 right-0 bg-neutral-200 rounded-full p-2 ">
+              <span
+                className={`text-right text-xs absolute -top-7 right-0 ${
+                  isValid ? "bg-green-200" : "bg-neutral-200"
+                } rounded-full p-2`}
+              >
                 {currentProductIndex + 1}/{editedProducts.length}
               </span>
             </div>
