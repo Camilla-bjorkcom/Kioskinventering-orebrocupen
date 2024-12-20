@@ -17,7 +17,7 @@ export enum KeypadKeys {
   EIGHT = '8',
   NINE = '9',
   CLEAR = 'CLR',
-  BKSP = 'Bksp',
+  BKSP = '<--',
   ZERO = '0',
 }
 

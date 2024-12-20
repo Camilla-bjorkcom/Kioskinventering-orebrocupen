@@ -30,7 +30,6 @@ const App2 = () => {
     null
   );
 
-
   const facility = "Rosta Gärde";
   const kiosk = "Kiosk 1";
   const inventoryDate = "2025-06-13 14:25";
@@ -51,18 +50,33 @@ const App2 = () => {
 
   useEffect(() => {
     if (data) {
-      setProducts(data);
-      setEditedProducts(
-        data.map((product) => ({
-          ...product,
-          amountPieces: "", // Initialt tomt
-          amountPackages: "", // Initialt tomt
-        }))
-      );
+      const updatedProducts = data.map((product) => ({
+        ...product,
+        amountPieces: "",
+        amountPackages: "",
+      }));
+      setEditedProducts(updatedProducts);
+      console.log("Updated editedProducts:", updatedProducts);
     }
   }, [data]);
 
-  const handleSubmit = async () => {
+  //valideringsflagga
+  const isValid = editedProducts.every(
+    (product) => product.amountPieces !== "" && product.amountPackages !== ""
+  );
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault(); // Förhindra formulärets standardomladdning
+
+    if (!isValid) {
+      toast({
+        title: "Misslyckades",
+        description: "Alla fält måste fyllas i.",
+        className: "bg-red-200",
+      });
+      return;
+    }
+
     try {
       const url = `http://localhost:3000/inventoryList/${id}`;
       const response = await fetch(url, {
@@ -76,13 +90,24 @@ const App2 = () => {
         console.error("Server response error:", errorText);
         throw new Error("Failed to update list");
       }
+
       toast({
         title: "Lyckat!",
         description: "Inventeringen skickades iväg",
+        className: "bg-green-200",
       });
+
+      // Lägg till en delay om det behövs:
+      setTimeout(() => {
+        console.log("Redirecting or doing something else...");
+      }, 3000); // 3 sekunder delay
     } catch (error) {
       console.error("Update failed:", error);
-      alert("Misslyckades med att spara ändringar.");
+      toast({
+        title: "Error",
+        description: "Misslyckades med att spara ändringar.",
+        className: "bg-red-200",
+      });
     }
   };
 
@@ -140,35 +165,35 @@ const App2 = () => {
 
   const goToNextProduct = () => {
     setCurrentProductIndex((prevIndex) => {
-      const nextIndex = prevIndex + 1 >= products.length ? 0 : prevIndex + 1;
+      const nextIndex =
+        prevIndex + 1 >= editedProducts.length ? 0 : prevIndex + 1;
       setActiveInput("pieces"); // Sätt fältet till "pieces" när produkten byts
       setKeypadTarget("pieces"); // Sätt rätt target för keypad
       return nextIndex;
     });
   };
-  
+
   const goToPreviousProduct = () => {
     setCurrentProductIndex((prevIndex) => {
-      const prevIndexResult = prevIndex - 1 < 0 ? products.length - 1 : prevIndex - 1;
+      const prevIndexResult =
+        prevIndex - 1 < 0 ? editedProducts.length - 1 : prevIndex - 1;
       setActiveInput("pieces"); // Sätt fältet till "pieces" när produkten byts
       setKeypadTarget("pieces"); // Sätt rätt target för keypad
       return prevIndexResult;
     });
   };
-  
-  
 
-  if (isLoading) {
-    return <div>Loading products...</div>;
+  if (isLoading || !editedProducts.length) {
+    return <div>Loading edited products...</div>;
   }
 
   if (error) {
     return <div>Error: {String(error)}</div>;
   }
 
-  const currentProduct = products[currentProductIndex];
+  const currentProduct = data?.[currentProductIndex];
   const currentEditedProduct = editedProducts[currentProductIndex];
-
+  console.log(editedProducts);
   if (!currentProduct) {
     return <div>No products available.</div>;
   }
@@ -198,7 +223,7 @@ const App2 = () => {
                 {currentProduct.productName}
               </h3>
               <span className="text-right text-xs absolute -top-7 right-0 bg-neutral-200 rounded-full p-2 ">
-                {currentProductIndex + 1}/{products.length}
+                {currentProductIndex + 1}/{editedProducts.length}
               </span>
             </div>
 
@@ -208,8 +233,8 @@ const App2 = () => {
                 <Input
                   value={currentEditedProduct.amountPieces}
                   onFocus={() => {
-                    handleFocus("pieces"); 
-                    setKeypadTarget("pieces"); 
+                    handleFocus("pieces");
+                    setKeypadTarget("pieces");
                   }}
                   onClick={() => {
                     handleFocus("pieces");
@@ -221,7 +246,9 @@ const App2 = () => {
                   readOnly
                   autoFocus
                   className={`border-b-2 border-black border-x-0 border-t-0 shadow-none rounded-none focus:outline-none focus-visible:ring-0 focus:border-orange-200 active:border-orange-200 w-full p-2  ${
-                    activeInput === "pieces" ? "border-orange-400 " : "border-gray-300"
+                    activeInput === "pieces"
+                      ? "border-orange-400 "
+                      : "border-gray-300"
                   }`}
                 />
               </div>
@@ -232,8 +259,8 @@ const App2 = () => {
                 <Input
                   value={currentEditedProduct.amountPackages}
                   onFocus={() => {
-                    handleFocus("packages"); 
-                    setKeypadTarget("packages"); 
+                    handleFocus("packages");
+                    setKeypadTarget("packages");
                   }}
                   onClick={() => {
                     handleFocus("packages");
@@ -244,7 +271,9 @@ const App2 = () => {
                   }
                   readOnly
                   className={`border-b-2 border-black border-x-0 border-t-0 shadow-none rounded-none focus:outline-none focus-visible:ring-0 focus:border-orange-200 active:border-orange-200 w-full p-2   ${
-                    activeInput === "packages" ? "border-orange-400 " : "border-gray-300"
+                    activeInput === "packages"
+                      ? "border-orange-400 "
+                      : "border-gray-300"
                   }`}
                 />
               </div>
