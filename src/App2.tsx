@@ -26,7 +26,7 @@ const App2 = () => {
   );
   const [editedProducts, setEditedProducts] = useState<Products[]>([]);
   const [activeInput, setActiveInput] = useState<"pieces" | "packages" | null>(
-    null
+    "pieces"
   );
 
   const facility = "Rosta Gärde";
@@ -104,8 +104,6 @@ const App2 = () => {
           amountPackages: "",
         }))
       );
-
- 
     } catch (error) {
       console.error("Update failed:", error);
       toast({
@@ -168,24 +166,29 @@ const App2 = () => {
     );
   };
 
-  const goToNextProduct = () => {
-    setCurrentProductIndex((prevIndex) => {
-      const nextIndex =
-        prevIndex + 1 >= editedProducts.length ? 0 : prevIndex + 1;
-      setActiveInput("pieces"); // Sätt fältet till "pieces" när produkten byts
-      setKeypadTarget("pieces"); // Sätt rätt target för keypad
-      return nextIndex;
-    });
+  const goToNextFieldOrProduct = () => {
+    if (keypadTarget === "pieces") {
+      setKeypadTarget("packages");
+      handleFocus("packages");
+    } else {
+      setKeypadTarget("pieces"); // Change focus back to 'pieces'
+      handleFocus("pieces"); // Manually focus on pieces field
+      setCurrentProductIndex((prevIndex) =>
+        prevIndex + 1 >= editedProducts.length ? 0 : prevIndex + 1
+      );
+    }
   };
 
-  const goToPreviousProduct = () => {
-    setCurrentProductIndex((prevIndex) => {
-      const prevIndexResult =
-        prevIndex - 1 < 0 ? editedProducts.length - 1 : prevIndex - 1;
-      setActiveInput("pieces"); // Sätt fältet till "pieces" när produkten byts
-      setKeypadTarget("pieces"); // Sätt rätt target för keypad
-      return prevIndexResult;
-    });
+  const goToPreviousFieldOrProduct = () => {
+    if (keypadTarget === "packages") {
+      setKeypadTarget("pieces");
+      handleFocus("pieces");
+    } else {
+      setKeypadTarget("packages");
+      setCurrentProductIndex((prevIndex) =>
+        prevIndex - 1 >= editedProducts.length ? 0 : prevIndex - 1
+      );
+    }
   };
 
   if (isLoading || !editedProducts.length) {
@@ -239,52 +242,56 @@ const App2 = () => {
             <div className="flex gap-5">
               <div className="flex flex-col">
                 <p className="text-xs font-semibold">Antal i styck</p>
-                <Input
-                  value={currentEditedProduct.amountPieces}
-                  onFocus={() => {
-                    handleFocus("pieces");
-                    setKeypadTarget("pieces");
-                  }}
-                  onClick={() => {
-                    handleFocus("pieces");
-                    setKeypadTarget("pieces");
-                  }}
-                  onChange={(e) =>
-                    updateCurrentProduct("pieces", () => e.target.value)
-                  }
-                  readOnly
-                  autoFocus
-                  className={`border-b-2 border-black border-x-0 border-t-0 shadow-none rounded-none focus:outline-none focus-visible:ring-0 focus:border-orange-200 active:border-orange-200 w-full p-2  ${
-                    activeInput === "pieces"
-                      ? "border-orange-400 "
-                      : "border-gray-300"
-                  }`}
-                />
+                {activeInput === "pieces" && (
+                  <Input
+                    value={currentEditedProduct.amountPieces}
+                    onFocus={() => {
+                      handleFocus("pieces");
+                      setKeypadTarget("pieces");
+                    }}
+                    onClick={() => {
+                      handleFocus("pieces");
+                      setKeypadTarget("pieces");
+                    }}
+                    onChange={(e) =>
+                      updateCurrentProduct("pieces", () => e.target.value)
+                    }
+                    readOnly
+                    autoFocus
+                    className={`border-b-2 border-black border-x-0 border-t-0 shadow-none rounded-none focus:outline-none focus-visible:ring-0 focus:border-orange-200 active:border-orange-200 w-full p-2  ${
+                      activeInput === "pieces"
+                        ? "border-orange-400 "
+                        : "border-gray-300"
+                    }`}
+                  />
+                )}
               </div>
               <div className="flex flex-col">
                 <p className="text-xs font-semibold">
                   Antal i obrutna förpackningar
                 </p>
-                <Input
-                  value={currentEditedProduct.amountPackages}
-                  onFocus={() => {
-                    handleFocus("packages");
-                    setKeypadTarget("packages");
-                  }}
-                  onClick={() => {
-                    handleFocus("packages");
-                    setKeypadTarget("packages");
-                  }}
-                  onChange={(e) =>
-                    updateCurrentProduct("packages", () => e.target.value)
-                  }
-                  readOnly
-                  className={`border-b-2 border-black border-x-0 border-t-0 shadow-none rounded-none focus:outline-none focus-visible:ring-0 focus:border-orange-200 active:border-orange-200 w-full p-2   ${
-                    activeInput === "packages"
-                      ? "border-orange-400 "
-                      : "border-gray-300"
-                  }`}
-                />
+                {activeInput === "packages" && (
+                  <Input
+                    value={currentEditedProduct.amountPackages}
+                    onFocus={() => {
+                      handleFocus("packages");
+                      setKeypadTarget("packages");
+                    }}
+                    onClick={() => {
+                      handleFocus("packages");
+                      setKeypadTarget("packages");
+                    }}
+                    onChange={(e) =>
+                      updateCurrentProduct("packages", () => e.target.value)
+                    }
+                    readOnly
+                    className={`border-b-2 border-black border-x-0 border-t-0 shadow-none rounded-none focus:outline-none focus-visible:ring-0 focus:border-orange-200 active:border-orange-200 w-full p-2   ${
+                      activeInput === "packages"
+                        ? "border-orange-400 "
+                        : "border-gray-300"
+                    }`}
+                  />
+                )}
               </div>
             </div>
 
@@ -298,7 +305,10 @@ const App2 = () => {
         <div className="flex justify-between mx-5">
           <Button
             type="button"
-            onClick={goToPreviousProduct}
+            onClick={() => {
+              goToPreviousFieldOrProduct();
+              // Change the input field as well
+            }}
             className="place-self-center rounded-xl h-12"
             variant={"outline"}
           >
@@ -307,7 +317,9 @@ const App2 = () => {
 
           <Button
             type="button"
-            onClick={goToNextProduct}
+            onClick={() => {
+              goToNextFieldOrProduct();
+            }}
             className="place-self-center rounded-xl h-12"
             variant={"outline"}
           >
