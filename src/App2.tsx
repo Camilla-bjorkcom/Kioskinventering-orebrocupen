@@ -183,6 +183,13 @@ const App2 = () => {
     if (keypadTarget === "packages") {
       setKeypadTarget("pieces");
       handleFocus("pieces");
+    }
+    else if (isValid) {
+      setCurrentProductIndex((prevIndex) =>
+        prevIndex === 0 ? editedProducts.length - 1 : prevIndex - 1
+      );
+      setKeypadTarget("packages");
+      handleFocus("packages");
     } else {
       setKeypadTarget("packages");
       handleFocus("packages");
@@ -315,7 +322,7 @@ const App2 = () => {
                 goToPreviousFieldOrProduct();
                 // Change the input field as well
               }}
-              className={`place-self-center rounded-xl h-12 ${currentProductIndex === 0 && activeInput === "pieces" ?  "invisible" : ""}`}
+              className={`place-self-center rounded-xl h-12 ${currentProductIndex === 0 && activeInput === "pieces" && !isValid ?  "invisible" : ""}`}
               variant={"outline"}
             >
               <ArrowBigLeft />
