@@ -369,8 +369,8 @@ const App2 = () => {
         </div>
       )}
       {isListView && (
-        <div className="container mx-auto p-3">
-          <div className="rounded-xl border border-black border-solid text-black aspect-video">
+        <div className="container mx-auto p-3 ">
+          <div className="rounded-xl border border-black border-solid text-black aspect-video relative">
             <h2 className="text-lg lg:text-3xl text-center w-full mt-10 font-bold">
               Inventera {facility} {kiosk}
             </h2>
@@ -432,7 +432,7 @@ const App2 = () => {
       </form>
             <Button
               type="button"
-              className="w-16 h-16 shadow border m-1 p-1 rounded-full absolute right-0 bottom-2"
+              className="w-16 h-16 shadow border m-1 p-1 rounded-full sticky right-0 bottom-2"
               variant={"outline"}
               onClick={() => {
                 toggleListView();
