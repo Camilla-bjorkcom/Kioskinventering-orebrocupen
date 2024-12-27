@@ -5,7 +5,7 @@ import { Button } from "./components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "./hooks/use-toast";
 import { Toaster } from "./components/ui/toaster";
-import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
+import { ArrowBigLeft, ArrowBigRight, LayoutList } from "lucide-react";
 
 type KioskInventory = {
   id: number;
@@ -28,6 +28,7 @@ const App2 = () => {
   const [activeInput, setActiveInput] = useState<"pieces" | "packages" | null>(
     "pieces"
   );
+  const [isListView, setIsListView] = useState(false);
 
   const facility = "Rosta Gärde";
   const kiosk = "Kiosk 1";
@@ -183,8 +184,7 @@ const App2 = () => {
     if (keypadTarget === "packages") {
       setKeypadTarget("pieces");
       handleFocus("pieces");
-    }
-    else if (isValid) {
+    } else if (isValid) {
       setCurrentProductIndex((prevIndex) =>
         prevIndex === 0 ? editedProducts.length - 1 : prevIndex - 1
       );
@@ -197,6 +197,10 @@ const App2 = () => {
         prevIndex - 1 >= editedProducts.length ? 0 : prevIndex - 1
       );
     }
+  };
+
+  const goToListView = () => {
+    setIsListView(true);
   };
 
   if (isLoading || !editedProducts.length) {
@@ -221,127 +225,202 @@ const App2 = () => {
   return (
     <>
       <Toaster />
-      <div className="grid grid-rows-[auto__1fr_auto_2fr] h-screen container mx-auto p-4">
-        <div>
-          <h2 className="text-center w-full mb-1 h-fit">
-            {facility} {kiosk}
-          </h2>
-          <p className="text-center text-xs">
-            Senast inventering: {inventoryDate}
-          </p>
-        </div>
+      {!isListView && (
+        <div className="grid grid-rows-[auto__1fr_auto_2fr] h-screen container mx-auto p-4">
+          <div>
+            <h2 className="text-center w-full mb-1 h-fit">
+              {facility} {kiosk}
+            </h2>
+            <p className="text-center text-xs">
+              Senast inventering: {inventoryDate}
+            </p>
+          </div>
 
-        <div className="flex flex-col items-center justify-center relative">
-          <form onSubmit={handleSubmit} className="w-fit mx-auto mb-5">
-           
-            {/* Progress display */}
-            <div className="mt-auto">
-              <h3 className="text-2xl font-bold text-center mb-6">
-                {currentProduct.productName}
-              </h3>
-              <span
-                className={`text-right text-xs absolute -top-7 right-0 ${
-                  isValid ? "bg-green-200" : "bg-neutral-200"
-                } rounded-full p-2`}
-              >
-                {currentProductIndex + 1}/{editedProducts.length}
-              </span>
-            </div>
+          <div className="flex flex-col items-center justify-center relative">
+            <form onSubmit={handleSubmit} className="w-fit mx-auto mb-5">
+              {/* Progress display */}
+              <div className="mt-auto">
+                <h3 className="text-2xl font-bold text-center p-2 mb-6">
+                  {currentProduct.productName}
+                </h3>
+                <span
+                  className={`text-right text-xs absolute -top-7 right-0 ${
+                    isValid ? "bg-green-200" : "bg-neutral-200"
+                  } rounded-full p-2`}
+                >
+                  {currentProductIndex + 1}/{editedProducts.length}
+                </span>
+              </div>
 
-            <div className="flex flex-col">
-              {activeInput === "pieces" && (
-                <>
-                  <p className="text-xs font-semibold">Antal i styck</p>
+              <div className="flex flex-col">
+                {activeInput === "pieces" && (
+                  <>
+                    <p className="text-xs font-semibold">Antal i styck</p>
 
-                  <Input
-                    value={currentEditedProduct.amountPieces}
-                    onFocus={() => {
-                      handleFocus("pieces");
-                      setKeypadTarget("pieces");
-                    }}
-                    onClick={() => {
-                      handleFocus("pieces");
-                      setKeypadTarget("pieces");
-                    }}
-                    onChange={(e) =>
-                      updateCurrentProduct("pieces", () => e.target.value)
-                    }
-                    readOnly
-                    autoFocus
-                    className={`border-b-2 border-black border-x-0 border-t-0 shadow-none rounded-none focus:outline-none focus-visible:ring-0 focus:border-orange-200 active:border-orange-200 w-full p-2  ${
-                      activeInput === "pieces"
-                        ? "border-orange-400 "
-                        : "border-gray-300"
-                    }`}
-                  />
-                </>
+                    <Input
+                      value={currentEditedProduct.amountPieces}
+                      onFocus={() => {
+                        handleFocus("pieces");
+                        setKeypadTarget("pieces");
+                      }}
+                      onClick={() => {
+                        handleFocus("pieces");
+                        setKeypadTarget("pieces");
+                      }}
+                      onChange={(e) =>
+                        updateCurrentProduct("pieces", () => e.target.value)
+                      }
+                      readOnly
+                      autoFocus
+                      className={`border-b-2 border-black border-x-0 border-t-0 shadow-none rounded-none focus:outline-none focus-visible:ring-0 focus:border-orange-200 active:border-orange-200 w-full p-2  ${
+                        activeInput === "pieces"
+                          ? "border-orange-400 "
+                          : "border-gray-300"
+                      }`}
+                    />
+                  </>
+                )}
+              </div>
+              <div className="flex flex-col">
+                {activeInput === "packages" && (
+                  <>
+                    <p className="text-xs font-semibold">
+                      Antal i obrutna förpackningar
+                    </p>
+
+                    <Input
+                      value={currentEditedProduct.amountPackages}
+                      onFocus={() => {
+                        handleFocus("packages");
+                        setKeypadTarget("packages");
+                      }}
+                      onClick={() => {
+                        handleFocus("packages");
+                        setKeypadTarget("packages");
+                      }}
+                      onChange={(e) =>
+                        updateCurrentProduct("packages", () => e.target.value)
+                      }
+                      readOnly
+                      className={`border-b-2 border-black border-x-0 border-t-0 shadow-none rounded-none focus:outline-none focus-visible:ring-0 focus:border-orange-200 active:border-orange-200 w-full p-2   ${
+                        activeInput === "packages"
+                          ? "border-orange-400 "
+                          : "border-gray-300"
+                      }`}
+                    />
+                  </>
+                )}
+              </div>
+              {isValid && (
+                <div className="w-full flex">
+                  <Button type="submit" className="mt-10 mx-auto">
+                    Skicka in inventering
+                  </Button>
+                </div>
               )}
-            </div>
-            <div className="flex flex-col">
-              {activeInput === "packages" && (
-                <>
-                  <p className="text-xs font-semibold">
-                    Antal i obrutna förpackningar
-                  </p>
-
-                  <Input
-                    value={currentEditedProduct.amountPackages}
-                    onFocus={() => {
-                      handleFocus("packages");
-                      setKeypadTarget("packages");
-                    }}
-                    onClick={() => {
-                      handleFocus("packages");
-                      setKeypadTarget("packages");
-                    }}
-                    onChange={(e) =>
-                      updateCurrentProduct("packages", () => e.target.value)
-                    }
-                    readOnly
-                    className={`border-b-2 border-black border-x-0 border-t-0 shadow-none rounded-none focus:outline-none focus-visible:ring-0 focus:border-orange-200 active:border-orange-200 w-full p-2   ${
-                      activeInput === "packages"
-                        ? "border-orange-400 "
-                        : "border-gray-300"
-                    }`}
-                  />
-                </>
-              )}
-            </div>
-
-            <div className="w-full flex">
-              <Button type="submit" className="mt-10 mx-auto">
-                Skicka in inventering
-              </Button>
-            </div>
-          </form>
-        </div>
-        <div className="flex justify-between mx-5">      
+            </form>
+          </div>
+          <div className="flex justify-between mx-5">
             <Button
               type="button"
               onClick={() => {
                 goToPreviousFieldOrProduct();
                 // Change the input field as well
               }}
-              className={`place-self-center rounded-xl h-12 ${currentProductIndex === 0 && activeInput === "pieces" && !isValid ?  "invisible" : ""}`}
+              className={`place-self-center rounded-xl h-12 ${
+                currentProductIndex === 0 &&
+                activeInput === "pieces" &&
+                !isValid
+                  ? "invisible"
+                  : ""
+              }`}
               variant={"outline"}
             >
               <ArrowBigLeft />
             </Button>
-         
 
-          <Button
-            type="button"
-            onClick={() => {
-              goToNextFieldOrProduct();
-            }}
-            className="place-self-center rounded-xl h-12"
-            variant={"outline"}
-          >
-            <ArrowBigRight className="" />
-          </Button>
+            <Button
+              type="button"
+              onClick={() => {
+                goToNextFieldOrProduct();
+              }}
+              className="place-self-center rounded-xl h-12"
+              variant={"outline"}
+            >
+              <ArrowBigRight className="" />
+            </Button>
+          </div>
+          <div className="flex relative">
+            <Keypad onKeyPressed={handleKeypadPress} />
+            <Button
+              type="button"
+              className="w-16 h-16 shadow border m-1 p-1 rounded-full absolute right-0 bottom-2"
+              variant={"outline"}
+              onClick={() => {
+                goToListView();
+              }}
+            >
+              <LayoutList className="w-20 h-20" />
+            </Button>
+          </div>
         </div>
-        <Keypad onKeyPressed={handleKeypadPress} />
-      </div>
+      )}
+      {isListView && (
+           <div className="container mx-auto p-3">
+           <div className="rounded-xl border border-black border-solid text-black aspect-video">
+             <h2 className="text-lg lg:text-3xl text-center w-full mt-10 font-bold">
+               Inventera {facility} {kiosk}
+             </h2>
+             <div className="w-full place-items-center mt-5 gap-3 mb-16">
+               <p className="text-sm lg:text-lg">Senast inventering gjord:</p>
+               <h3 className="lg:text-lg font-semibold">{inventoryDate}</h3>
+             </div>
+   
+             <form onSubmit={handleSubmit} >
+                 {data.map((product, index) => (
+                   
+                   <div
+                     key={product.id}
+                     className={`space-y-4 lg:flex ${
+                       index % 2 === 0
+                         ? "bg-gray-100 rounded-lg p-5"
+                         : "bg-white rounded-lg p-5"
+                     }`}
+                   >
+                    
+                        
+                             <p className="lg:w-[220px] text-lg">
+                               {product.productName}
+                             </p>
+                    
+                  
+                   
+                     <div className="flex gap-5">
+                      <label>Antal i styck</label>
+                     <Input
+                      value={currentEditedProduct.amountPieces} readOnly/>
+                        <label>Antal obrutna förpackningar</label>
+                      <Input
+                      value={currentEditedProduct.amountPackages} readOnly/>
+                      
+                   
+                     </div>
+                   </div>
+                 ))}
+   
+                 <div className="w-1/2 place-self-center">
+                   <Button
+                   type="submit"
+                     className="w-full mt-10"      
+                   >
+                     Skicka in inventering
+                   </Button>
+                 </div>
+                 </form>
+            
+           </div>
+         </div>
+      )}
     </>
   );
 };

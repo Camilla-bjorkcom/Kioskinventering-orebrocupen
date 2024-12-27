@@ -11,26 +11,26 @@
         {
           "id": "2",
           "productName": "Hamburgare",
-          "amountPieces": 1,
-          "amountPackages": 1
+          "amountPieces": 22,
+          "amountPackages": 22
         },
         {
           "id": "3",
           "productName": "Coca-cola",
-          "amountPieces": 1,
-          "amountPackages": 1
+          "amountPieces": 33,
+          "amountPackages": 22
         },
         {
           "id": "4",
           "productName": "Kexchoklad",
-          "amountPieces": 1,
-          "amountPackages": 1
+          "amountPieces": 22,
+          "amountPackages": 22
         },
         {
           "id": "5",
           "productName": "Haribo Lakrits Nappar",
-          "amountPieces": 1,
-          "amountPackages": 1
+          "amountPieces": 22,
+          "amountPackages": 22
         }
       ],
       "id": "3395"
