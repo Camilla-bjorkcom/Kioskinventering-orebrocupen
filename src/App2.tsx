@@ -199,8 +199,11 @@ const App2 = () => {
     }
   };
 
-  const goToListView = () => {
-    setIsListView(true);
+  const toggleListView = () => {
+    if (!isListView) setIsListView(true);
+    else {
+      setIsListView(false);
+    }
   };
 
   if (isLoading || !editedProducts.length) {
@@ -357,7 +360,7 @@ const App2 = () => {
               className="w-16 h-16 shadow border m-1 p-1 rounded-full absolute right-0 bottom-2"
               variant={"outline"}
               onClick={() => {
-                goToListView();
+                toggleListView();
               }}
             >
               <LayoutList className="w-20 h-20" />
@@ -366,60 +369,79 @@ const App2 = () => {
         </div>
       )}
       {isListView && (
-           <div className="container mx-auto p-3">
-           <div className="rounded-xl border border-black border-solid text-black aspect-video">
-             <h2 className="text-lg lg:text-3xl text-center w-full mt-10 font-bold">
-               Inventera {facility} {kiosk}
-             </h2>
-             <div className="w-full place-items-center mt-5 gap-3 mb-16">
-               <p className="text-sm lg:text-lg">Senast inventering gjord:</p>
-               <h3 className="lg:text-lg font-semibold">{inventoryDate}</h3>
-             </div>
-   
-             <form onSubmit={handleSubmit} >
-                 {data.map((product, index) => (
-                   
-                   <div
-                     key={product.id}
-                     className={`space-y-4 lg:flex ${
-                       index % 2 === 0
-                         ? "bg-gray-100 rounded-lg p-5"
-                         : "bg-white rounded-lg p-5"
-                     }`}
-                   >
-                    
-                        
-                             <p className="lg:w-[220px] text-lg">
-                               {product.productName}
-                             </p>
-                    
-                  
-                   
-                     <div className="flex gap-5">
-                      <label>Antal i styck</label>
-                     <Input
-                      value={currentEditedProduct.amountPieces} readOnly/>
-                        <label>Antal obrutna förpackningar</label>
-                      <Input
-                      value={currentEditedProduct.amountPackages} readOnly/>
-                      
-                   
-                     </div>
-                   </div>
-                 ))}
-   
-                 <div className="w-1/2 place-self-center">
-                   <Button
-                   type="submit"
-                     className="w-full mt-10"      
-                   >
-                     Skicka in inventering
-                   </Button>
-                 </div>
-                 </form>
-            
-           </div>
-         </div>
+        <div className="container mx-auto p-3">
+          <div className="rounded-xl border border-black border-solid text-black aspect-video">
+            <h2 className="text-lg lg:text-3xl text-center w-full mt-10 font-bold">
+              Inventera {facility} {kiosk}
+            </h2>
+            <div className="w-full place-items-center mt-5 gap-3 mb-16">
+              <p className="text-sm lg:text-lg">Senast inventering gjord:</p>
+              <h3 className="lg:text-lg font-semibold">{inventoryDate}</h3>
+            </div>
+
+            <form onSubmit={handleSubmit}>
+        {editedProducts.map((product, index) => (
+          <div
+            key={product.id}
+            className={`space-y-4 lg:flex ${
+              index % 2 === 0
+                ? "bg-gray-100 rounded-lg p-5"
+                : "bg-white rounded-lg p-5"
+            }`}
+          >
+            <div className="flex flex-col lg:flex-row lg:gap-4">
+              <h3 className="text-lg font-bold">{product.productName}</h3>
+              <div className="flex flex-col">
+                <label className="text-sm font-semibold">Antal i styck</label>
+                <Input
+                  value={product.amountPieces}
+                  onChange={(e) =>
+                    setEditedProducts((prev) =>
+                      prev.map((p, i) =>
+                        i === index
+                          ? { ...p, amountPieces: e.target.value }
+                          : p
+                      )
+                    )
+                  }
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-sm font-semibold">
+                  Antal i förpackning
+                </label>
+                <Input
+                  value={product.amountPackages}
+                  onChange={(e) =>
+                    setEditedProducts((prev) =>
+                      prev.map((p, i) =>
+                        i === index
+                          ? { ...p, amountPackages: e.target.value }
+                          : p
+                      )
+                    )
+                  }
+                />
+              </div>
+            </div>
+          </div>
+        ))}
+        <Button type="submit" className="mt-5">
+          Skicka in inventering
+        </Button>
+      </form>
+            <Button
+              type="button"
+              className="w-16 h-16 shadow border m-1 p-1 rounded-full absolute right-0 bottom-2"
+              variant={"outline"}
+              onClick={() => {
+                toggleListView();
+              }}
+            >
+              <LayoutList className="w-20 h-20" />
+            </Button>
+          </div>
+        </div>
       )}
     </>
   );

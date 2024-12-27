@@ -5,8 +5,8 @@
         {
           "id": "1",
           "productName": "Rullgrillskorv",
-          "amountPieces": 1,
-          "amountPackages": 1
+          "amountPieces": 22,
+          "amountPackages": 22
         },
         {
           "id": "2",
@@ -17,20 +17,20 @@
         {
           "id": "3",
           "productName": "Coca-cola",
-          "amountPieces": 33,
-          "amountPackages": 22
+          "amountPieces": 22,
+          "amountPackages": 3
         },
         {
           "id": "4",
           "productName": "Kexchoklad",
-          "amountPieces": 22,
-          "amountPackages": 22
+          "amountPieces": 1,
+          "amountPackages": 2
         },
         {
           "id": "5",
           "productName": "Haribo Lakrits Nappar",
-          "amountPieces": 22,
-          "amountPackages": 22
+          "amountPieces": 23,
+          "amountPackages": 33
         }
       ],
       "id": "3395"
