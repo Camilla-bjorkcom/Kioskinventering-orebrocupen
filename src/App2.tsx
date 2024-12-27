@@ -185,6 +185,7 @@ const App2 = () => {
       handleFocus("pieces");
     } else {
       setKeypadTarget("packages");
+      handleFocus("packages");
       setCurrentProductIndex((prevIndex) =>
         prevIndex - 1 >= editedProducts.length ? 0 : prevIndex - 1
       );
@@ -223,10 +224,11 @@ const App2 = () => {
           </p>
         </div>
 
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center relative">
           <form onSubmit={handleSubmit} className="w-fit mx-auto mb-5">
+           
             {/* Progress display */}
-            <div className="mt-auto relative">
+            <div className="mt-auto">
               <h3 className="text-2xl font-bold text-center mb-6">
                 {currentProduct.productName}
               </h3>
@@ -313,7 +315,7 @@ const App2 = () => {
                 goToPreviousFieldOrProduct();
                 // Change the input field as well
               }}
-              className={`place-self-center rounded-xl h-12 ${currentProductIndex === 0 ?  "invisible" : ""}`}
+              className={`place-self-center rounded-xl h-12 ${currentProductIndex === 0 && activeInput === "pieces" ?  "invisible" : ""}`}
               variant={"outline"}
             >
               <ArrowBigLeft />
