@@ -172,8 +172,8 @@ const App2 = () => {
       setKeypadTarget("packages");
       handleFocus("packages");
     } else {
-      setKeypadTarget("pieces"); // Change focus back to 'pieces'
-      handleFocus("pieces"); // Manually focus on pieces field
+      setKeypadTarget("pieces"); 
+      handleFocus("pieces"); 
       setCurrentProductIndex((prevIndex) =>
         prevIndex + 1 >= editedProducts.length ? 0 : prevIndex + 1
       );
@@ -207,7 +207,7 @@ const App2 = () => {
   };
 
   if (isLoading || !editedProducts.length) {
-    return <div>Loading edited products...</div>;
+    return <div>Loading products...</div>;
   }
 
   if (error) {
@@ -328,7 +328,6 @@ const App2 = () => {
               type="button"
               onClick={() => {
                 goToPreviousFieldOrProduct();
-                // Change the input field as well
               }}
               className={`place-self-center rounded-xl h-12 ${
                 currentProductIndex === 0 &&
